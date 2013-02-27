@@ -19,18 +19,24 @@ class Ping(Leap.Listener) :
 
     def on_frame(self, controller):
         frame = controller.frame()
-        print "Frame Id:", frame.id
+        print "Frame id:", frame.id, "; Frame Timestamp:", frame.timestamp, "\r"
         _hands_count = len(frame.hands)
-        print "Hands:", _hands_count, "Hand Ids:",
-        for _hand in frame.hands() :
-            print _hand.id(), ", ",
+        print "Hands:", _hands_count, "Hand ids:",
+        hands = frame.hands
+        for hand in hands :
+            print hand.id,
         if _hands_count > 0 :
-            for hand in frame.hands() :
+            for hand in hands :
                 _fingers_count = len(hand.fingers)
-                print "Hand: ", hand.id , " has ", _fingers_count, " Fingers"
-                print "Finger Ids: ",
-                for finger in hand.fingers() :
-                    print finger.id(),
+                print "Hand with id:", hand.id , "has", _fingers_count, "Fingers\r"
+                print "Finger Ids: \r"
+                for finger in hand.fingers :
+                    print finger.id,
+                    print "length:", finger.length, "width:", finger.width,  "tip-position:", finger.tip_position, \
+                        "vector:", finger.direction, # "to-string", finger.to_String,
+                    if finger.is_finger :
+                        print "Valid Finger \r"
+                print "\r"
 
 
 def main() :
