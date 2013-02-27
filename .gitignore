@@ -1,0 +1,8 @@
+#All Files with these extentions
+*.dll
+*.pyd
+
+#These files
+Leap.py
+Leap.dll
+LeapPython.pyd
