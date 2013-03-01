@@ -40,7 +40,7 @@ class Ping(Leap.Listener) :
             for hand in hands :
                 _fingers_count = len(hand.fingers)
                 print "Hand with id:", hand.id , "has", _fingers_count, "Fingers\r"
-                print "Finger Ids: \r"
+                print "Finger ids: \r"
                 for finger in hand.fingers :
                     print finger.id,
                     print "length:", finger.length, "width:", finger.width,  "tip-position:", finger.tip_position, \
