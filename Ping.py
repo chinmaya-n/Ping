@@ -7,6 +7,10 @@ class Ping(Leap.Listener) :
     # Now we will implement some methods
     def on_connect(self, controller):
         print "Just got Connected"
+        controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP, True)
+        controller.enable_gesture(Leap.Gesture.TYPE_CIRCLE, True)
+        if controller.is_gesture_enabled(Leap.Gesture.TYPE_KEY_TAP or Leap.Gesture.TYPE_CIRCLE) :
+            print("Key Tap Gesture or Circle Gesture is enabled")
 
     def on_disconnect(self, controller):
         print("Disconnected")
@@ -19,6 +23,7 @@ class Ping(Leap.Listener) :
 
     def on_frame(self, controller):
         frame = controller.frame()
+        print("\n")
 
         #Frame Information
         print "Frame id:", frame.id, "; Frame Timestamp:", frame.timestamp, "\r"
@@ -42,12 +47,17 @@ class Ping(Leap.Listener) :
                         "vector:", finger.direction, # "to-string", finger.to_String,
                     if finger.is_finger :
                         print "Valid Finger \r"
-                print "\r"
 
         #Gesture Information
         if len(frame.gestures())>0 :
-            for gesture in frame.gestures :
-                print("Gesture id:", gesture.id,"Gesture duration(ms):", gesture.duration,"Gesture Type:", gesture.type)
+            for gesture in frame.gestures() :
+                if gesture.type == Leap.Gesture.TYPE_KEY_TAP :
+                    keyStroke = Leap.KeyTapGesture(gesture)
+                    finger = keyStroke.pointable.id
+                    print("Gesture id:", gesture.id,"Key Tap Gesture Type:", gesture.type, "Finger id associated:", finger, "Gesture duration(ms):", gesture.duration)
+                elif gesture.type == Leap.Gesture.TYPE_CIRCLE :
+                    print("Gesture id:", gesture.id,"Circle Gesture Type:", gesture.type, "Gesture duration(ms):", gesture.duration)
+
         else :
             print("No Gestures")
 
@@ -64,9 +74,6 @@ def main() :
     listener = Ping()
     controller.add_listener(listener)
     print "Added Listener!"
-    controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP, True)
-    if controller.is_gesture_enabled(Leap.Gesture.TYPE_KEY_TAP) :
-        print("Key Tap Gesture is enabled")
     print "Press any key to close the Ping"
     sys.stdin.readline()
     controller.remove_listener(listener)
