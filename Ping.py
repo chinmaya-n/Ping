@@ -19,12 +19,18 @@ class Ping(Leap.Listener) :
 
     def on_frame(self, controller):
         frame = controller.frame()
+
+        #Frame Information
         print "Frame id:", frame.id, "; Frame Timestamp:", frame.timestamp, "\r"
+
+        #Hand Information
         _hands_count = len(frame.hands)
         print "Hands:", _hands_count, "Hand ids:",
         hands = frame.hands
         for hand in hands :
             print hand.id,
+
+        #Finger Information based on Hand
         if _hands_count > 0 :
             for hand in hands :
                 _fingers_count = len(hand.fingers)
@@ -37,6 +43,13 @@ class Ping(Leap.Listener) :
                     if finger.is_finger :
                         print "Valid Finger \r"
                 print "\r"
+
+        #Gesture Information
+        if len(frame.gestures())>0 :
+            for gesture in frame.gestures :
+                print("Gesture id:", gesture.id,"Gesture duration(ms):", gesture.duration,"Gesture Type:", gesture.type)
+        else :
+            print("No Gestures")
 
 
 def main() :
@@ -51,6 +64,9 @@ def main() :
     listener = Ping()
     controller.add_listener(listener)
     print "Added Listener!"
+    controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP, True)
+    if controller.is_gesture_enabled(Leap.Gesture.TYPE_KEY_TAP) :
+        print("Key Tap Gesture is enabled")
     print "Press any key to close the Ping"
     sys.stdin.readline()
     controller.remove_listener(listener)
