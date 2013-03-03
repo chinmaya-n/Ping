@@ -73,8 +73,7 @@ class Ping(Leap.Listener) :
 
         #Tools Information
         if len(frame.tools)>0 :
-            print("Tools Information,")
-            print("Count:", len(frame.tools))
+            print("Tools Information-------- Count:", len(frame.tools))
             for tool in frame.tools :
                 print("Id",tool.id,"Length:",tool.length,"Width",tool.width,"Tip Position:",tool.tip_position,"Vector",
                       tool.direction,"Velocity",tool.tip_velocity, "isValid:",("no","yes")[tool.is_tool==True],
@@ -82,13 +81,16 @@ class Ping(Leap.Listener) :
 
         #Gesture Information
         if len(frame.gestures())>0 :
+            print("Gesture Information--------")
             for gesture in frame.gestures() :
                 if gesture.type == Leap.Gesture.TYPE_KEY_TAP :
                     keyStroke = Leap.KeyTapGesture(gesture)
                     finger = keyStroke.pointable
-                    print("Gesture id:", gesture.id,"Key Tap Gesture Type:", gesture.type, "Finger id associated:", finger.id, "Gesture duration(ms):", gesture.duration)
+                    print("Gesture id:", gesture.id,"Key Tap Gesture Type:", gesture.type, "Finger id associated:",
+                          finger.id, "Gesture duration(ms):", gesture.duration)
                 elif gesture.type == Leap.Gesture.TYPE_CIRCLE :
-                    print("Gesture id:", gesture.id,"Circle Gesture Type:", gesture.type, "Finger id associated:", gesture.pointable.id, "Gesture duration(ms):", gesture.duration)
+                    print("Gesture id:", gesture.id,"Circle Gesture Type:", gesture.type, "Finger id associated:",
+                          gesture.pointable.id, "Gesture duration(ms):", gesture.duration)
 
         else :
             print("No Gestures")
