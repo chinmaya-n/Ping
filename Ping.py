@@ -82,11 +82,9 @@ def main() :
     # Main function to be executed while running the program
     controller = Leap.Controller()
     while not controller.is_connected :
-        pass
+        print "Controller status: OFF"
     if controller.is_connected :
         print "Controller status: ON"
-    else :
-        print "Controller status: OFF"
     listener = Ping()
     controller.add_listener(listener)
     print "Added Listener!"
