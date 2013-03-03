@@ -34,40 +34,46 @@ class Ping(Leap.Listener) :
         print("\n")
 
         #Frame Information
-        print("Frame Information")
+        print("Frame Information--------")
         print "Id:", frame.id, "; Timestamp:", frame.timestamp, " isValid:", ("no","yes")[frame.is_valid==True]
 
         #Hand Information
         _hands_count = len(frame.hands)
-        print "Hands:", _hands_count,
-        hands = frame.hands
-        for hand in hands :
-            print "Hand ids:", hand.id, "Hand "
+        if _hands_count >0 :
+            print "Hands Information--------","Count:", _hands_count,
+            hands = frame.hands
+            for hand in hands :
+                print "id:", hand.id, "Vector:", hand.direction, "position:", hand.palm_position, "velocity:", \
+                    hand.palm_velocity, "Sphere Radius:", hand.sphere_radius, "Sphere center:", hand.sphere_center,\
+                    "Palm Normal:",hand.palm_normal,"Fingers:", hand.fingers.count, "Tools:",\
+                    hand.tools.count, "isValid:", ("no","yes")[hand.is_valid==True]
 
         #Finger Information based on both hand & frame
-        if _hands_count > 0 :
-            for hand in hands :
-                _fingers_count = len(hand.fingers)
-                print "Hand with id:", hand.id , "has", _fingers_count, "Fingers\r"
-                print "Finger ids: \r"
-                for finger in hand.fingers :
-                    print finger.id,
-                    print "length:", finger.length, "width:", finger.width,  "tip-position:", finger.tip_position, \
-                        "vector:", finger.direction, # "to-string", finger.to_String,
+        if frame.fingers.count > 0 :
+            print("Finger Information--------")
+            if _hands_count > 0 :
+                for hand in frame.hands :
+                    _fingers_count = len(hand.fingers)
+                    print "Hand with id:", hand.id , "has", _fingers_count, "Fingers\r"
+                    for finger in hand.fingers :
+                        print "Id:",finger.id, "length:", finger.length, "width:", finger.width,  "tip-position:",\
+                            finger.tip_position, "vector:", finger.direction, "velocity:",finger.tip_velocity, # "to-string", finger.to_String,
+                        if finger.is_finger :
+                            print "Valid Finger \r"
+                        else :
+                            print("Invalid Finger")
+            elif len(frame.fingers)>0 :
+                for finger in frame.fingers :
+                    print "Id:",finger.id, "length:", finger.length, "width:", finger.width,  "tip-position:",\
+                        finger.tip_position, "vector:", finger.direction, "velocity:",finger.tip_velocity, # "to-string", finger.to_String,
                     if finger.is_finger :
                         print "Valid Finger \r"
-        elif len(frame.fingers)>0 :
-            print "Finger ids: \r"
-            for finger in frame.fingers :
-                print finger.id,
-                print "length:", finger.length, "width:", finger.width,  "tip-position:", finger.tip_position,\
-                    "vector:", finger.direction, #"to-string", finger.to_String,
-                if finger.is_finger :
-                    print "Valid Finger \r"
+                    else :
+                        print("Invalid Finger")
 
         #Tools Information
         if len(frame.tools)>0 :
-            print("Tools Information")
+            print("Tools Information,")
             print("Count:", len(frame.tools))
             for tool in frame.tools :
                 print("Id",tool.id,"Length:",tool.length,"Width",tool.width,"Tip Position:",tool.tip_position,"Vector",
