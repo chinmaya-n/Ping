@@ -34,16 +34,17 @@ class Ping(Leap.Listener) :
         print("\n")
 
         #Frame Information
-        print "Frame id:", frame.id, "; Frame Timestamp:", frame.timestamp, "\r"
+        print("Frame Information")
+        print "Id:", frame.id, "; Timestamp:", frame.timestamp, " isValid:", ("no","yes")[frame.is_valid==True]
 
         #Hand Information
         _hands_count = len(frame.hands)
-        print "Hands:", _hands_count, "Hand ids:",
+        print "Hands:", _hands_count,
         hands = frame.hands
         for hand in hands :
-            print hand.id,
+            print "Hand ids:", hand.id, "Hand "
 
-        #Finger Information based on Hand
+        #Finger Information based on both hand & frame
         if _hands_count > 0 :
             for hand in hands :
                 _fingers_count = len(hand.fingers)
@@ -60,9 +61,18 @@ class Ping(Leap.Listener) :
             for finger in frame.fingers :
                 print finger.id,
                 print "length:", finger.length, "width:", finger.width,  "tip-position:", finger.tip_position,\
-                    "vector:", finger.direction, # "to-string", finger.to_String,
+                    "vector:", finger.direction, #"to-string", finger.to_String,
                 if finger.is_finger :
                     print "Valid Finger \r"
+
+        #Tools Information
+        if len(frame.tools)>0 :
+            print("Tools Information")
+            print("Count:", len(frame.tools))
+            for tool in frame.tools :
+                print("Id",tool.id,"Length:",tool.length,"Width",tool.width,"Tip Position:",tool.tip_position,"Vector",
+                      tool.direction,"Velocity",tool.tip_velocity, "isValid:",("no","yes")[tool.is_tool==True],
+                      "Hand associated id:",tool.hand.id)
 
         #Gesture Information
         if len(frame.gestures())>0 :
