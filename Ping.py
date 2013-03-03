@@ -35,21 +35,21 @@ class Ping(Leap.Listener) :
 
         #Frame Information
         print("Frame Information--------")
-        print "Id:", frame.id, "; Timestamp:", frame.timestamp, " isValid:", ("no","yes")[frame.is_valid==True]
+        print "Id:", frame.id, "Timestamp:", frame.timestamp, " isValid:", ("no","yes")[frame.is_valid==True]
 
         #Hand Information
         _hands_count = len(frame.hands)
         if _hands_count >0 :
-            print "Hands Information--------","Count:", _hands_count,
+            print "Hands Information--------","Count:", _hands_count
             hands = frame.hands
             for hand in hands :
                 print "id:", hand.id, "Vector:", hand.direction, "position:", hand.palm_position, "velocity:", \
                     hand.palm_velocity, "Sphere Radius:", hand.sphere_radius, "Sphere center:", hand.sphere_center,\
-                    "Palm Normal:",hand.palm_normal,"Fingers:", hand.fingers.count, "Tools:",\
-                    hand.tools.count, "isValid:", ("no","yes")[hand.is_valid==True]
+                    "Palm Normal:",hand.palm_normal,"Fingers:", len(hand.fingers), "Tools:",\
+                    len(hand.tools), "isValid:", ("no","yes")[hand.is_valid==True]
 
         #Finger Information based on both hand & frame
-        if frame.fingers.count > 0 :
+        if len(frame.fingers) > 0 :
             print("Finger Information--------")
             if _hands_count > 0 :
                 for hand in frame.hands :
@@ -89,8 +89,10 @@ class Ping(Leap.Listener) :
                     print("Gesture id:", gesture.id,"Key Tap Gesture Type:", gesture.type, "Finger id associated:",
                           finger.id, "Gesture duration(ms):", gesture.duration)
                 elif gesture.type == Leap.Gesture.TYPE_CIRCLE :
+                    circle = Leap.CircleGesture(gesture)
+                    fingerId = circle.pointable.id
                     print("Gesture id:", gesture.id,"Circle Gesture Type:", gesture.type, "Finger id associated:",
-                          gesture.pointable.id, "Gesture duration(ms):", gesture.duration)
+                          fingerId, "Gesture duration(ms):", gesture.duration)
 
         else :
             print("No Gestures")
