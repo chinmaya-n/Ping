@@ -63,7 +63,6 @@ class Ping(Leap.Listener) :
                     "vector:", finger.direction, # "to-string", finger.to_String,
                 if finger.is_finger :
                     print "Valid Finger \r"
-            print("hi")
 
         #Gesture Information
         if len(frame.gestures())>0 :
@@ -73,7 +72,7 @@ class Ping(Leap.Listener) :
                     finger = keyStroke.pointable
                     print("Gesture id:", gesture.id,"Key Tap Gesture Type:", gesture.type, "Finger id associated:", finger.id, "Gesture duration(ms):", gesture.duration)
                 elif gesture.type == Leap.Gesture.TYPE_CIRCLE :
-                    print("Gesture id:", gesture.id,"Circle Gesture Type:", gesture.type, "Gesture duration(ms):", gesture.duration)
+                    print("Gesture id:", gesture.id,"Circle Gesture Type:", gesture.type, "Finger id associated:", gesture.pointable.id, "Gesture duration(ms):", gesture.duration)
 
         else :
             print("No Gestures")
