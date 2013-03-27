@@ -1,6 +1,8 @@
 #All Files with these extentions
 *.dll
 *.pyd
+*.wpu
+*.wpr
 
 #These files
 Leap.py
