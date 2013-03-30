@@ -3,6 +3,8 @@
 *.pyd
 *.wpu
 *.wpr
+*.pyc
+*.so
 
 #These files
 Leap.py
