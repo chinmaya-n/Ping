@@ -4,13 +4,17 @@ import "ManageFingers.js" as FC
 Rectangle {
 
     //Signals
-    signal qmlStart
+    signal qmlStarted
     signal qmlStop
 
     //initialize
     id: mainView
     color: "black"
     focus: true
+
+    // Move the axis to the center of the Rectangle so that to be in sync
+    // with Leap
+
 
     //Build a Component for refering finger tip position
     //Has to be child of the root element
@@ -52,15 +56,17 @@ Rectangle {
 
     Text {
         id: status
-        anchors.centerIn: parent
+        anchors.left: parent.right - status.width
+        anchors.bottom: parent.bottom
         text: "Status Display"
         color: "white"
     }
 
     //On Building the Component
     Component.onCompleted: {
-        // Raise a Signal
-        qmlStart()
+        // Raise a Signal to start Leap Motion
+        FC.fingerInitialize(fingerTip, mainView, status)
+        qmlStarted()
     }
     Component.onDestruction: {
         // Raise a signal

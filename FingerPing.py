@@ -13,7 +13,14 @@ from QtCore import pyqtSignal
 from QtDeclarative import QDeclarativeView
 from QtGui import QApplication
 
+
 class FingerPing(Leap.Listener) :
+    
+    # Variables & Signals
+    previous_frame_fingers = []
+    finger_position_change = pyqtSignal()
+    new_finger = pyqtSignal()
+    remove_finger = pyqtSignal()
 
     # Now we will implement some methods
     def on_init(self, controller):
@@ -21,6 +28,9 @@ class FingerPing(Leap.Listener) :
         
     def on_connect(self, controller):
         print("Connected")
+        finger_position_change.connect(fingerPostionChange)
+        new_finger.connect()
+        remove_finger.connect()
         
     def on_disconnect(self, controller):
         print("Disconnected")
@@ -34,9 +44,10 @@ class FingerPing(Leap.Listener) :
         fingerList = controller.fingers()
         for finger in fingerList :
             # send finger info like - x,y positions & finger id
+            hi = 1
 
 
-def main() :
+def main():
     # Main function to be executed while running the program
 
     # Generate QML View and show it
@@ -49,6 +60,14 @@ def main() :
     # Get Root Object for inter-communication
     rootObject = view.rootObject()
     
+    # Connect to start Leap signal.
+    rootObject.qmlStarted.connect(startLeap)
+    
+    # Connect to stop Leap signal
+    rootObject.qmlStop.connect(stopLeap)
+    
+
+def startLeap():
     
     # Creating Controller
     controller = Leap.Controller()
@@ -61,11 +80,17 @@ def main() :
     listener = FingerPing()
     controller.add_listener(listener)
     print "Added Listener!"
-    
-    # Remove the listener on command
-    print "Press any key to close the Ping"
-    sys.stdin.readline()
-    controller.remove_listener(listener)
 
+def stopLeap():
+    """
+    () -> int
+    This method stops Leap by removing listener from controller.
+    
+    """
+    
+    # Removes Listener
+    controller.remove_listener(listener)
+    return 0
+    
 if __name__ == '__main__' :
     main()
