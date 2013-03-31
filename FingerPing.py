@@ -9,28 +9,30 @@
 __author__ = 'inblueswithu'
 
 import Leap, sys
-from QtCore import pyqtSignal
-from QtDeclarative import QDeclarativeView
-from QtGui import QApplication
+from PyQt4.QtCore import pyqtSignal, QUrl
+from PyQt4.QtDeclarative import QDeclarativeView
+from PyQt4.QtGui import QApplication
 
+#Global Variables
+rootObject  = object
 
 class FingerPing(Leap.Listener) :
     
     # Variables & Signals
     previous_frame_fingers = []
-    finger_position_change = pyqtSignal()
-    new_finger = pyqtSignal()
-    remove_finger = pyqtSignal()
+    finger_position_change = pyqtSignal(str,float,float)
+    new_finger = pyqtSignal(str,float,float)
+    remove_finger = pyqtSignal(str)
 
     # Now we will implement some methods
     def on_init(self, controller):
         print("Initialized")
         
     def on_connect(self, controller):
+        self.finger_position_change.connect(rootObject.fingerPostionChange)
+        self.new_finger.connect(rootObject.newFinger)
+        self.remove_finger.connect(rootObject.removeFinger)
         print("Connected")
-        finger_position_change.connect(fingerPostionChange)
-        new_finger.connect()
-        remove_finger.connect()
         
     def on_disconnect(self, controller):
         print("Disconnected")
@@ -41,23 +43,42 @@ class FingerPing(Leap.Listener) :
     def on_frame(self, controller):
         print("Frame Data")
         frame = controller.frame()
-        fingerList = controller.fingers()
+        fingerList = frame.fingers()
+        frame_fingers = []
         for finger in fingerList :
-            # send finger info like - x,y positions & finger id
-            hi = 1
+            
+            fingerId = finger.id
+            
+            # if finger not present then send a signel to create
+            if finger.id not in self.previous_frame_fingers :
+                self.new_finger.emit(str(fingerId), finger.tipPosition.x, finger.tipPosition.y)
+                
+            # if finger is present then send a signel for its position
+            else :
+                self.finger_position_change.emit(str(fingerId), finger.tipPosition.x, finger.tipPosition.y)
+                self.previous_frame_fingers.remove(fingerId)
+                
+            # accumulate present frame finger Ids
+            frame_fingers.append(fingerId)
+        
+        # Delete any old fingers from previous_frame_fingers by comparing frame_fingers, the finger Id accumulator
+        for fingerId in self.previous_frame_fingers :
+            self.remove_finger.emit(str(fingerId))
+        
+        # Assign frame_fingers as previous_frame_fingers for next iteration purpose
+        self.previous_frame_fingers = frame_fingers
 
 
 def main():
     # Main function to be executed while running the program
 
-    # Generate QML View and show it
+    # Generate QML View
+    app = QApplication(sys.argv)
     view = QDeclarativeView()
     view.setSource(QUrl('Fingers.qml'))
     view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
-    view.setGeometry(100, 100, 400, 240)
-    view.show()
 
-    # Get Root Object for inter-communication
+    # Get Root Object for communication
     rootObject = view.rootObject()
     
     # Connect to start Leap signal.
@@ -65,6 +86,11 @@ def main():
     
     # Connect to stop Leap signal
     rootObject.qmlStop.connect(stopLeap)
+    
+    # Display the component
+    view.setGeometry(100, 100, 800, 600)
+    view.show()
+    app.exec_()    
     
 
 def startLeap():
@@ -80,6 +106,7 @@ def startLeap():
     listener = FingerPing()
     controller.add_listener(listener)
     print "Added Listener!"
+
 
 def stopLeap():
     """

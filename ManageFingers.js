@@ -1,4 +1,5 @@
 .pragma library
+
 //Finger List Management using different functions
 var dynamicObjectList = new Object() ;
 var fingerComponent,rootView, statusText;
@@ -23,27 +24,12 @@ function fingerCount() {
     return noOfFingers
 }
 
-//simple variables
-var xValue = 0
-var count = 1
 
+// Finger Operations for creating, removing and modifying positions etc.
 function fingerInitialize(component, root, status) {
     fingerComponent = component
     rootView = root
     statusText = status
-}
-
-function createFinger(fingerTip,mainView,status) {
-    var fingerObject = fingerTip.createObject(mainView,{x: xValue}); xValue+=20
-    var fingerId = 'finger'+count; count++
-    append(fingerId, fingerObject)
-    status.text = fingerCount() + 'fingers'
-}
-
-function destroyFinger(fingerId,status) {
-    get(fingerId).destroy()
-    remove(fingerId)
-    status.text = fingerCount() + 'fingers'
 }
 
 function newFinger(fingerId, x, y) {
@@ -66,3 +52,21 @@ function removeFinger(fingerId) {
     remove(fingerId)
     statusText.text = fingerCount() + 'fingers'
 }
+
+
+////simple variables
+//var xValue = 0
+//var count = 1
+
+//function createFinger(fingerTip,mainView,status) {
+//    var fingerObject = fingerTip.createObject(mainView,{x: xValue}); xValue+=20
+//    var fingerId = 'finger'+count; count++
+//    append(fingerId, fingerObject)
+//    status.text = fingerCount() + 'fingers'
+//}
+
+//function destroyFinger(fingerId,status) {
+//    get(fingerId).destroy()
+//    remove(fingerId)
+//    status.text = fingerCount() + 'fingers'
+//}

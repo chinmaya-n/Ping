@@ -11,6 +11,8 @@ Rectangle {
     id: mainView
     color: "black"
     focus: true
+    width: 800
+    height: 400
 
     // Move the axis to the center of the Rectangle so that to be in sync
     // with Leap
@@ -26,50 +28,58 @@ Rectangle {
         }
     }
 
-
-    //Destroy the Component when index is given
-
-
     //Listen if a component has to be created
-
+    function newFinger(fingerId, x, y) {
+        FC.newFinger(fingerId,x,y)
+    }
 
     //Listen if a component has to be destroyed
-
+    function removeFinger(fingerId) {
+        FC.removeFinger(fingerId)
+    }
 
     //Listen for the placement of the fingers
-    //Apply the placement
-
-
-    //Keys & Status Display
-    property int idNo : 1
-
-    Keys.onPressed: {
-        if(event.key===Qt.Key_Up) {
-            FC.createFinger(fingerTip,mainView,status)
-        }
-        if(event.key===Qt.Key_Down) {
-            var fingerId = 'finger'+idNo
-            FC.destroyFinger(fingerId, status)
-            idNo++
-        }
+    function fingerPositionChange(fingerId, x, y) {
+        FC.fingerPostionChange(fingerId,x,y)
     }
 
     Text {
         id: status
-        anchors.left: parent.right - status.width
-        anchors.bottom: parent.bottom
+//        anchors.left: parent.right - status.width
+//        anchors.bottom: parent.bottom
+        anchors.centerIn: parent
         text: "Status Display"
         color: "white"
     }
 
-    //On Building the Component
+    MouseArea {
+        anchors.fill: parent
+        onClicked: qmlStarted()
+    }
+
+    //On Building & Destructing the Component
     Component.onCompleted: {
         // Raise a Signal to start Leap Motion
         FC.fingerInitialize(fingerTip, mainView, status)
         qmlStarted()
     }
+
     Component.onDestruction: {
         // Raise a signal
         qmlStop()
     }
 }
+
+//Keys & Status Display
+//    property int idNo : 1
+
+//    Keys.onPressed: {
+//        if(event.key===Qt.Key_Up) {
+//            FC.createFinger(fingerTip,mainView,status)
+//        }
+//        if(event.key===Qt.Key_Down) {
+//            var fingerId = 'finger'+idNo
+//            FC.destroyFinger(fingerId, status)
+//            idNo++
+//        }
+//    }
