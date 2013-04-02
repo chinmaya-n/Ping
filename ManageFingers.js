@@ -39,7 +39,7 @@ function newFinger(fingerId, x, y) {
     statusText.text = fingerCount() + 'fingers'
 }
 
-function fingerPostionChange(fingerId, x, y) {
+function fingerPositionChange(fingerId, x, y) {
     fingerId = 'finger' + fingerId
     var finger = get(fingerId)
     finger.x = x ; finger.y = y;

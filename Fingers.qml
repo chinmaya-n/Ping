@@ -40,7 +40,7 @@ Rectangle {
 
     //Listen for the placement of the fingers
     function fingerPositionChange(fingerId, x, y) {
-        FC.fingerPostionChange(fingerId,x,y)
+        FC.fingerPositionChange(fingerId,x,y)
     }
 
     Text {
@@ -64,10 +64,10 @@ Rectangle {
         qmlStarted()
     }
 
-    Component.onDestruction: {
-        // Raise a signal
-        qmlStop()
-    }
+//    Component.onDestruction: {
+//        // Raise a signal
+//        qmlStop()
+//    }
 }
 
 //Keys & Status Display

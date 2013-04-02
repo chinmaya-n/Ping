@@ -9,29 +9,52 @@
 __author__ = 'inblueswithu'
 
 import Leap, sys
-from PyQt4.QtCore import pyqtSignal, QUrl
+from PyQt4.QtCore import pyqtSignal, QUrl, QObject
 from PyQt4.QtDeclarative import QDeclarativeView
 from PyQt4.QtGui import QApplication
 
 #Global Variables
-rootObject  = object
+rootObject = object
 
-class FingerPing(Leap.Listener) :
+class Signelling(QObject):
+    """
+    This class is used for different signelling purpose.
+    For Connecting all signals and Emitting individual signals
+    """
     
-    # Variables & Signals
-    previous_frame_fingers = []
     finger_position_change = pyqtSignal(str,float,float)
     new_finger = pyqtSignal(str,float,float)
     remove_finger = pyqtSignal(str)
+    
+    def connectAll(self):
+        self.finger_position_change.connect(rootObject.fingerPositionChange)
+        self.new_finger.connect(rootObject.newFinger)
+        self.remove_finger.connect(rootObject.removeFinger)
+        return 0
+    
+    def emitNewFinger(self, fingerId, x, y):
+        self.new_finger.emit(fingerId,x,y)
+    
+    def emitFingerPositionChange(self, fingerId, x, y):
+        self.finger_position_change.emit(fingerId,x,y)
+    
+    def emitRemoveFinger(self, fingerId):
+        self.remove_finger.emit(fingerId)
+    
+    
+class FingerPing(Leap.Listener):
+    
+    # Variables & Signals
+    previous_frame_fingers = []
+    sig = Signelling()
 
     # Now we will implement some methods
     def on_init(self, controller):
         print("Initialized")
         
     def on_connect(self, controller):
-        self.finger_position_change.connect(rootObject.fingerPostionChange)
-        self.new_finger.connect(rootObject.newFinger)
-        self.remove_finger.connect(rootObject.removeFinger)
+        print(rootObject)
+        self.sig.connectAll()
         print("Connected")
         
     def on_disconnect(self, controller):
@@ -41,9 +64,9 @@ class FingerPing(Leap.Listener) :
         print("Exited")
 
     def on_frame(self, controller):
-        print("Frame Data")
         frame = controller.frame()
-        fingerList = frame.fingers()
+        print("Frame Data: ", frame.id)
+        fingerList = frame.fingers
         frame_fingers = []
         for finger in fingerList :
             
@@ -51,11 +74,12 @@ class FingerPing(Leap.Listener) :
             
             # if finger not present then send a signel to create
             if finger.id not in self.previous_frame_fingers :
-                self.new_finger.emit(str(fingerId), finger.tipPosition.x, finger.tipPosition.y)
+                print(str(fingerId), finger.tipPosition.x, finger.tipPosition.y) # for testing
+                self.sig.emitNewFinger(str(fingerId), finger.tipPosition.x, finger.tipPosition.y)
                 
             # if finger is present then send a signel for its position
             else :
-                self.finger_position_change.emit(str(fingerId), finger.tipPosition.x, finger.tipPosition.y)
+                self.sig.emitFingerPositionChange(str(fingerId), finger.tipPosition.x, finger.tipPosition.y)
                 self.previous_frame_fingers.remove(fingerId)
                 
             # accumulate present frame finger Ids
@@ -63,7 +87,7 @@ class FingerPing(Leap.Listener) :
         
         # Delete any old fingers from previous_frame_fingers by comparing frame_fingers, the finger Id accumulator
         for fingerId in self.previous_frame_fingers :
-            self.remove_finger.emit(str(fingerId))
+            self.sig.emitRemoveFinger(str(fingerId))
         
         # Assign frame_fingers as previous_frame_fingers for next iteration purpose
         self.previous_frame_fingers = frame_fingers
@@ -79,6 +103,7 @@ def main():
     view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
 
     # Get Root Object for communication
+    global rootObject
     rootObject = view.rootObject()
     
     # Connect to start Leap signal.
@@ -90,7 +115,7 @@ def main():
     # Display the component
     view.setGeometry(100, 100, 800, 600)
     view.show()
-    app.exec_()    
+    app.exec_()
     
 
 def startLeap():
@@ -98,7 +123,7 @@ def startLeap():
     # Creating Controller
     controller = Leap.Controller()
     while not controller.is_connected :
-        print "Controller status: OFF"
+        pass #print "Controller status: OFF"
     if controller.is_connected :
         print "Controller status: ON"
         
