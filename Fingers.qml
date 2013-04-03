@@ -3,16 +3,20 @@ import "ManageFingers.js" as FC
 
 Rectangle {
 
-    //Signals
-    signal qmlStarted
-    signal qmlStop
-
     //initialize
     id: mainView
     color: "black"
     focus: true
     width: 800
     height: 400
+
+    //Signals
+    signal qmlStarted
+    signal qmlStop
+
+    //Custom Properties
+    property double changeAxisX: width/2
+    property double changeAxisY: height/2
 
     // Move the axis to the center of the Rectangle so that to be in sync
     // with Leap
@@ -44,6 +48,8 @@ Rectangle {
 
     //Listen if a component has to be created
     function newFinger(fingerId, x, y) {
+        x = x+changeAxisX
+        y = y+changeAxisY
         FC.newFinger(fingerId,x,y)
     }
 
@@ -54,6 +60,8 @@ Rectangle {
 
     //Listen for the placement of the fingers
     function fingerPositionChange(fingerId, x, y) {
+        x = x+changeAxisX
+        y = y+changeAxisY
         FC.fingerPositionChange(fingerId,x,y)
     }
 
