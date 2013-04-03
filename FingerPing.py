@@ -22,8 +22,8 @@ class Signelling(QObject):
     For Connecting all signals and Emitting individual signals
     """
     
-    finger_position_change = pyqtSignal(str,float,float)
-    new_finger = pyqtSignal(str,float,float)
+    finger_position_change = pyqtSignal(str, float, float)
+    new_finger = pyqtSignal(str, float, float)
     remove_finger = pyqtSignal(str)
     
     def connectAll(self):
@@ -33,16 +33,19 @@ class Signelling(QObject):
         return 0
     
     def emitNewFinger(self, fingerId, x, y):
-        self.new_finger.emit(fingerId,x,y)
+        self.new_finger.emit(fingerId, x, y)
     
     def emitFingerPositionChange(self, fingerId, x, y):
-        self.finger_position_change.emit(fingerId,x,y)
+        self.finger_position_change.emit(fingerId, x, y)
     
     def emitRemoveFinger(self, fingerId):
         self.remove_finger.emit(fingerId)
     
     
 class FingerPing(Leap.Listener):
+    """ This Class will listen from the controller for different events
+    Like init, connect, disconnect, frame etc1
+    """
     
     # Variables & Signals
     previous_frame_fingers = []
@@ -65,7 +68,7 @@ class FingerPing(Leap.Listener):
 
     def on_frame(self, controller):
         frame = controller.frame()
-        print("Frame Data: ", frame.id)
+        print("Frame Data: ", frame.id, "; No of Fingers: ", len(frame.fingers))
         fingerList = frame.fingers
         frame_fingers = []
         for finger in fingerList :
@@ -73,13 +76,14 @@ class FingerPing(Leap.Listener):
             fingerId = finger.id
             
             # if finger not present then send a signel to create
-            if finger.id not in self.previous_frame_fingers :
-                print(str(fingerId), finger.tipPosition.x, finger.tipPosition.y) # for testing
-                self.sig.emitNewFinger(str(fingerId), finger.tipPosition.x, finger.tipPosition.y)
+            if fingerId not in self.previous_frame_fingers :
+                print(str(fingerId), finger.tip_position.x, finger.tip_position.y) # for testing
+                self.sig.emitNewFinger(str(fingerId), finger.tip_position.x, finger.tip_position.y)
                 
             # if finger is present then send a signel for its position
             else :
-                self.sig.emitFingerPositionChange(str(fingerId), finger.tipPosition.x, finger.tipPosition.y)
+                print("Update Finger: ", str(fingerId))
+                self.sig.emitFingerPositionChange(str(fingerId), finger.tip_position.x, finger.tip_position.y)
                 self.previous_frame_fingers.remove(fingerId)
                 
             # accumulate present frame finger Ids
@@ -87,6 +91,7 @@ class FingerPing(Leap.Listener):
         
         # Delete any old fingers from previous_frame_fingers by comparing frame_fingers, the finger Id accumulator
         for fingerId in self.previous_frame_fingers :
+            print("This finger ", fingerId, " is removed")
             self.sig.emitRemoveFinger(str(fingerId))
         
         # Assign frame_fingers as previous_frame_fingers for next iteration purpose
@@ -142,6 +147,7 @@ def stopLeap():
     
     # Removes Listener
     controller.remove_listener(listener)
+    print("Listener Removed")
     return 0
     
 if __name__ == '__main__' :

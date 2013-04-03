@@ -28,6 +28,20 @@ Rectangle {
         }
     }
 
+    //Have a status Display for easy understanding of the state of the frame
+    Text {
+        id: status
+        anchors.centerIn: parent
+        text: "Status Display"
+        color: "white"
+    }
+
+    //For Initiating the Leap raise a signal
+    MouseArea {
+        anchors.fill: parent
+        onClicked: qmlStarted()
+    }
+
     //Listen if a component has to be created
     function newFinger(fingerId, x, y) {
         FC.newFinger(fingerId,x,y)
@@ -43,20 +57,6 @@ Rectangle {
         FC.fingerPositionChange(fingerId,x,y)
     }
 
-    Text {
-        id: status
-//        anchors.left: parent.right - status.width
-//        anchors.bottom: parent.bottom
-        anchors.centerIn: parent
-        text: "Status Display"
-        color: "white"
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: qmlStarted()
-    }
-
     //On Building & Destructing the Component
     Component.onCompleted: {
         // Raise a Signal to start Leap Motion
@@ -64,22 +64,9 @@ Rectangle {
         qmlStarted()
     }
 
-//    Component.onDestruction: {
-//        // Raise a signal
-//        qmlStop()
-//    }
+    Component.onDestruction: {
+        // Raise a signal
+        qmlStop()
+    }
 }
 
-//Keys & Status Display
-//    property int idNo : 1
-
-//    Keys.onPressed: {
-//        if(event.key===Qt.Key_Up) {
-//            FC.createFinger(fingerTip,mainView,status)
-//        }
-//        if(event.key===Qt.Key_Down) {
-//            var fingerId = 'finger'+idNo
-//            FC.destroyFinger(fingerId, status)
-//            idNo++
-//        }
-//    }
