@@ -118,7 +118,13 @@ def main():
     rootObject.qmlStop.connect(stopLeap)
     
     # Display the component
-    view.setGeometry(100, 100, 800, 600)
+    import subprocess
+    output = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
+    output = output[:-1]
+    screenX = output[:output.index('x')]
+    screenY = output[output.index('x')+1:]
+    
+    view.setGeometry(100, 100, int(screenX), int(screenY))
     view.show()
     app.exec_()
     
