@@ -110,8 +110,8 @@ def main():
     # Get Root Object for communication
     global rootObject
     rootObject = view.rootObject()
-    
-    # Connect to start Leap signal.
+        
+    # Connect to start Leap signal
     rootObject.qmlStarted.connect(startLeap)
     
     # Connect to stop Leap signal
@@ -127,6 +127,7 @@ def main():
     view.setGeometry(100, 100, int(screenX), int(screenY))
     view.show()
     app.exec_()
+    
     
 
 def startLeap():
@@ -148,7 +149,6 @@ def stopLeap():
     """
     () -> int
     This method stops Leap by removing listener from controller.
-    
     """
     
     # Removes Listener
