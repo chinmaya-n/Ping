@@ -1,0 +1,7 @@
+Simple Frame Info printed to command line.
+
+Specifications
+--------------
+OS: Linux/Windows
+Framework: Leap, Python
+Leap.py & LeapPython.so from the "Leap Dev Kit" has to be added to this folder
