@@ -1,0 +1,8 @@
+This is a Leap Finger Pointer Demonstration.
+Did for Enjoyment & Learning Purpose.
+
+Specifications
+--------------
+OS: Linux
+Framework: Leap, QT5 (used QML 1.1 only), pyqt4
+Leap.py & LeapPython.so form the Leap Dev Kit has to be added to this folder

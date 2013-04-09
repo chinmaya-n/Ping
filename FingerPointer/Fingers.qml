@@ -15,6 +15,7 @@ Rectangle {
     //Custom Properties
     // Move the axis to the center of the Rectangle so that to be in sync with Leap
     property double changeAxisX: width/2
+    property double changeAxisY: height
 
     //Build a Component for refering finger tip position
     //Has to be child of the root element
@@ -42,13 +43,15 @@ Rectangle {
 
     //Listen if a component has to be created
     function newFinger(fingerId, x, y) {
-        x = x+changeAxisX
+        x = changeAxisX - x
+        y = changeAxisY - y
         FC.newFinger(fingerId,x,y)
     }
 
     //Listen for the placement of the fingers
     function fingerPositionChange(fingerId, x, y) {
-        x = x+changeAxisX
+        x = changeAxisX - x
+        y = changeAxisY - y
         FC.fingerPositionChange(fingerId,x,y)
     }
 
