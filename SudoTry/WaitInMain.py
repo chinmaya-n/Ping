@@ -1,5 +1,8 @@
 import Leap, sys
 
+controller = object
+listener1 = listener2 = object
+
 class A(Leap.Listener):
     """
     Listener 1
@@ -9,15 +12,11 @@ class A(Leap.Listener):
     flag = False
     
     def on_exit(self, controller):
-        """
-        runs on exit
-        """
+        """ runs on exit """
         print("exited 1")
         
     def on_frame(self, controller):
-        """
-        called for every frame
-        
+        """ called for every frame
         increments count for many frames and on 1000 frame it does some work
         """
         
@@ -29,6 +28,7 @@ class A(Leap.Listener):
             
         elif self.count > 1000 :
             self.flag = False
+            
 
 
 class B(Leap.Listener):
@@ -40,15 +40,12 @@ class B(Leap.Listener):
     flag = False
     
     def on_exit(self, controller):
-        """
-        runs on exit
-        """
+        """ runs on exit """
+        
         print("exited 2")
         
     def on_frame(self, controller):
-        """
-        called for every frame
-        
+        """ called for every frame
         increments count for many frames and on 1000 frame it does some work
         """
         
@@ -67,7 +64,11 @@ def main():
     main funtion to be run
     """
     
+    global controller
     controller = Leap.Controller()
+    
+    global listener1
+    global listener2
     listener1 = A()
     listener2 = B()
     
